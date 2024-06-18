@@ -1,24 +1,35 @@
-import logo from './logo.svg';
 import './App.css';
-
+import './components/Products.css';
+import { useState } from 'react';
+import productsData from './mocks/products.json';
+import { Products } from './components/Products.jsx';
+import { Header } from './components/Header.jsx';
 function App() {
+  const [products] = useState(productsData.products);
+  const [filters, setFilters] = useState({
+    category: 'all',
+    minPrice: 0,
+    maxPrice: 2500
+  });
+  const filterProducts = (products) => {
+    return products.filter(product => {
+      return (
+        product.price <= filters.maxPrice &&
+        product.price >= filters.minPrice &&
+        (
+          filters.category === 'all' ||
+          product.category === filters.category
+        )
+
+      )
+    });
+  }
+  const filteredProducts = filterProducts(products);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Header changeFilters={setFilters} />
+      <Products products={filteredProducts} />
+    </>
   );
 }
 
